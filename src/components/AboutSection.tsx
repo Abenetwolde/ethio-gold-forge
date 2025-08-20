@@ -1,8 +1,100 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Shield, Award, Users, Globe, ArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const AboutSection = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 70%",
+          end: "bottom 30%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      // Content animation
+      tl.from(contentRef.current?.querySelector("h2"), {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: "power3.out"
+      })
+      .from(contentRef.current?.querySelector("p"), {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: "power2.out"
+      }, "-=0.5")
+      .from(contentRef.current?.querySelectorAll("li") || [], {
+        opacity: 0,
+        x: -30,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power2.out"
+      }, "-=0.3")
+      .from(contentRef.current?.querySelector("button"), {
+        opacity: 0,
+        scale: 0.9,
+        duration: 0.6,
+        ease: "back.out(1.7)"
+      }, "-=0.4");
+
+      // Features cards animation
+      gsap.from(featuresRef.current?.children || [], {
+        opacity: 0,
+        y: 60,
+        rotation: -5,
+        scale: 0.9,
+        duration: 1,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: featuresRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      // Icon hover animations
+      const icons = featuresRef.current?.querySelectorAll(".feature-icon");
+      icons?.forEach(icon => {
+        gsap.set(icon, { transformOrigin: "center" });
+        
+        icon.addEventListener('mouseenter', () => {
+          gsap.to(icon, {
+            scale: 1.2,
+            rotation: 10,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+        
+        icon.addEventListener('mouseleave', () => {
+          gsap.to(icon, {
+            scale: 1,
+            rotation: 0,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+      });
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const features = [
     {
       icon: Shield,
@@ -27,14 +119,14 @@ const AboutSection = () => {
   ];
 
   return (
-    <section id="about" className="py-20 relative overflow-hidden">
+    <section ref={sectionRef} id="about" className="py-20 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-radial opacity-20" />
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Column - Content */}
-          <div className="space-y-8 animate-fadeInUp">
+          <div ref={contentRef} className="space-y-8">
             <div className="space-y-4">
               <h2 className="text-4xl lg:text-5xl font-bold">
                 <span className="text-foreground">Pioneering</span>{" "}
@@ -77,7 +169,7 @@ const AboutSection = () => {
           </div>
 
           {/* Right Column - Feature Cards */}
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div ref={featuresRef} className="grid sm:grid-cols-2 gap-6">
             {features.map((feature, index) => (
               <Card 
                 key={index}
@@ -85,7 +177,7 @@ const AboutSection = () => {
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <div className="space-y-4">
-                  <div className="h-12 w-12 rounded-lg bg-gradient-golden flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <div className="feature-icon h-12 w-12 rounded-lg bg-gradient-golden flex items-center justify-center">
                     <feature.icon className="h-6 w-6 text-primary-foreground" />
                   </div>
                   <h4 className="text-xl font-semibold text-primary">
