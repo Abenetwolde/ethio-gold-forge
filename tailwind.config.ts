@@ -51,17 +51,25 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
-				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			fontFamily: {
+				inter: ['Inter', 'system-ui', 'sans-serif'],
+				poppins: ['Poppins', 'system-ui', 'sans-serif'],
+			},
+			backgroundImage: {
+				'gradient-golden': 'var(--gradient-primary)',
+				'gradient-radial': 'var(--gradient-radial)',
+				'gradient-circuit': 'var(--gradient-circuit)',
+			},
+			boxShadow: {
+				'glow': 'var(--shadow-glow)',
+				'luxury': 'var(--shadow-luxury)',
+				'neumorphic': 'var(--shadow-neumorphic)',
+			},
+			transitionTimingFunction: {
+				'luxury': 'var(--ease-luxury)',
+				'bounce': 'var(--ease-bounce)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +92,31 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-20px)' }
+				},
+				'glow-pulse': {
+					'0%': { boxShadow: '0 0 5px hsl(var(--primary) / 0.5)' },
+					'100%': { boxShadow: '0 0 20px hsl(var(--primary) / 0.8)' }
+				},
+				'fadeInUp': {
+					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'scaleIn': {
+					'0%': { opacity: '0', transform: 'scale(0.95)' },
+					'100%': { opacity: '1', transform: 'scale(1)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 6s ease-in-out infinite',
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite alternate',
+				'fadeInUp': 'fadeInUp 0.6s ease-out',
+				'scaleIn': 'scaleIn 0.4s ease-out'
 			}
 		}
 	},
