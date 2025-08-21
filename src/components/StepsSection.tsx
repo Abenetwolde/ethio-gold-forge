@@ -13,6 +13,7 @@ const StepsSection = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -45,10 +46,18 @@ const StepsSection = () => {
         }
       });
 
-      // Cards storytelling animation
+      // Enhanced GitHub-style shiny cards animation
       const cards = cardsRef.current?.children;
       if (cards) {
+        let currentActive = 0;
+        
         Array.from(cards).forEach((card, index) => {
+          // Initial setup - first card is active
+          gsap.set(card, {
+            scale: index === 0 ? 1.05 : 1,
+            boxShadow: index === 0 ? "0 0 30px rgba(255, 215, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)" : "0 4px 20px rgba(0, 0, 0, 0.3)"
+          });
+
           const tl = gsap.timeline({
             scrollTrigger: {
               trigger: card,
@@ -57,7 +66,7 @@ const StepsSection = () => {
             }
           });
 
-          // Card entrance
+          // GitHub-style card entrance with shiny effect
           tl.from(card, {
             opacity: 0,
             y: 100,
@@ -66,21 +75,35 @@ const StepsSection = () => {
             ease: "power3.out"
           })
           
-          // Step number glow effect
+          // Add shiny animation
+          .to(card, {
+            backgroundImage: "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%)",
+            backgroundSize: "200% 200%",
+            backgroundPosition: "-200% 0",
+            duration: 0.1
+          }, "-=0.5")
+          
+          .to(card, {
+            backgroundPosition: "200% 0",
+            duration: 1.5,
+            ease: "power2.inOut"
+          })
+          
+          // Step number with glow
           .from(card.querySelector(".step-number"), {
             scale: 0,
             opacity: 0,
             duration: 0.8,
             ease: "elastic.out(1, 0.3)"
-          }, "-=0.8")
+          }, "-=2")
           
-          // Icon bounce in
+          // Icon with rotation
           .from(card.querySelector(".step-icon"), {
             scale: 0,
             rotation: -180,
             duration: 0.6,
             ease: "back.out(1.7)"
-          }, "-=0.6")
+          }, "-=1.5")
           
           // Text reveal
           .from([
@@ -92,18 +115,18 @@ const StepsSection = () => {
             duration: 0.6,
             stagger: 0.2,
             ease: "power2.out"
-          }, "-=0.4")
+          }, "-=1")
           
-          // Details reveal on scroll
+          // Details reveal
           .from(card.querySelectorAll(".step-detail") || [], {
             opacity: 0,
             x: -20,
             duration: 0.4,
             stagger: 0.1,
             ease: "power2.out"
-          }, "-=0.2");
+          }, "-=0.5");
 
-          // Timeline dot animation
+          // Enhanced timeline dot with progress
           const dot = document.querySelector(`.timeline-dot-${index}`);
           if (dot) {
             gsap.from(dot, {
@@ -118,6 +141,45 @@ const StepsSection = () => {
             });
           }
         });
+
+        // Auto-progression system like Web Hooks timeline
+        const autoProgress = () => {
+          if (cards.length > 0) {
+            // Reset previous active
+            gsap.to(cards[currentActive], {
+              scale: 1,
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+              duration: 0.5
+            });
+            
+            // Move to next
+            currentActive = (currentActive + 1) % cards.length;
+            
+            // Activate new card with GitHub glow
+            gsap.to(cards[currentActive], {
+              scale: 1.05,
+              boxShadow: "0 0 30px rgba(255, 215, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 32px rgba(255, 215, 0, 0.3)",
+              duration: 0.6,
+              ease: "power2.out"
+            });
+
+            // Progress line animation
+            const progressLine = progressRef.current;
+            if (progressLine) {
+              gsap.to(progressLine, {
+                width: `${((currentActive + 1) / cards.length) * 100}%`,
+                duration: 0.8,
+                ease: "power2.out"
+              });
+            }
+          }
+        };
+
+        // Start auto progression
+        const interval = setInterval(autoProgress, 4000);
+        
+        // Cleanup
+        return () => clearInterval(interval);
       }
 
       // CTA animation
@@ -215,12 +277,16 @@ const StepsSection = () => {
           </p>
         </div>
 
-        {/* Timeline Container */}
+        {/* Enhanced Timeline Container */}
         <div ref={timelineRef} className="relative mb-8">
-          {/* Timeline Line */}
-          <div className="timeline-line hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-golden transform -translate-y-1/2 z-0" />
-          {/* Progress Indicator */}
-          <div className="progress-indicator hidden lg:block absolute top-1/2 left-0 h-1 bg-primary transform -translate-y-1/2 z-10 origin-left scale-x-0" />
+          {/* Timeline Base Line */}
+          <div className="timeline-line hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-muted via-primary/30 to-muted transform -translate-y-1/2 z-0 rounded-full" />
+          {/* Active Progress Line */}
+          <div 
+            ref={progressRef}
+            className="hidden lg:block absolute top-1/2 left-0 h-1 bg-gradient-golden transform -translate-y-1/2 z-10 rounded-full transition-all duration-800"
+            style={{ width: '25%' }}
+          />
         </div>
           
         <div ref={cardsRef} className="grid lg:grid-cols-4 gap-8">
@@ -229,7 +295,7 @@ const StepsSection = () => {
               {/* Timeline Dot */}
               <div className={`timeline-dot-${index} hidden lg:block absolute -top-8 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-primary rounded-full border-4 border-background z-20 shadow-glow`} />
               
-              <Card className="step-card p-8 backdrop-luxury border-primary/20 shadow-neumorphic hover:shadow-luxury transition-all duration-500 hover:-translate-y-4 group">
+              <Card className="step-card p-8 backdrop-luxury border-primary/20 shadow-neumorphic hover:shadow-luxury transition-all duration-500 hover:-translate-y-4 group relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/10 github-card">
                 <div className="space-y-6">
                   {/* Step Number */}
                   <div className="flex items-center justify-between">

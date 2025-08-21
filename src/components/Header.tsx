@@ -24,22 +24,24 @@ const Header = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header entrance animation
+      // Header entrance animation - start transparent
+      gsap.set(headerRef.current, { 
+        opacity: 1, 
+        y: 0,
+        backgroundColor: "transparent",
+        backdropFilter: "none"
+      });
+
       const tl = gsap.timeline();
       
-      tl.from(headerRef.current, {
-        y: -100,
-        opacity: 0,
-        duration: 1,
-        ease: "power3.out"
-      })
-      .from(logoRef.current, {
+      // Logo and nav entrance
+      tl.from(logoRef.current, {
         scale: 0.8,
         opacity: 0,
         rotation: -180,
         duration: 0.8,
         ease: "back.out(1.7)"
-      }, "-=0.8")
+      })
       .from(navRef.current?.children || [], {
         y: -20,
         opacity: 0,
@@ -55,23 +57,39 @@ const Header = () => {
         ease: "back.out(1.7)"
       }, "-=0.4");
 
-      // Header shrink animation
+      // Enhanced scroll trigger for glassmorphism
       ScrollTrigger.create({
         trigger: document.body,
-        start: "100px top",
+        start: "150px top",
         end: "bottom bottom",
         onToggle: (self) => {
           if (self.isActive) {
+            // Show with glassmorphism and narrow down
             gsap.to(headerRef.current, {
-              backdropFilter: "blur(20px)",
-              backgroundColor: "rgba(18, 18, 18, 0.95)",
+              height: "60px",
+              backdropFilter: "blur(20px) saturate(180%)",
+              backgroundColor: "rgba(18, 18, 18, 0.85)",
+              borderBottom: "1px solid rgba(255, 215, 0, 0.2)",
+              duration: 0.6,
+              ease: "power3.out"
+            });
+            gsap.to(logoRef.current, {
+              scale: 0.9,
               duration: 0.4,
               ease: "power2.out"
             });
           } else {
+            // Return to transparent
             gsap.to(headerRef.current, {
-              backdropFilter: "blur(10px)",
-              backgroundColor: "rgba(18, 18, 18, 0.8)",
+              height: "80px",
+              backdropFilter: "none",
+              backgroundColor: "transparent",
+              borderBottom: "none",
+              duration: 0.6,
+              ease: "power3.out"
+            });
+            gsap.to(logoRef.current, {
+              scale: 1,
               duration: 0.4,
               ease: "power2.out"
             });
@@ -79,13 +97,36 @@ const Header = () => {
         }
       });
 
-      // Logo pulse animation
+      // Enhanced logo pulse animation
       gsap.to(logoRef.current?.querySelector(".logo-icon"), {
         scale: 1.1,
+        filter: "drop-shadow(0 0 10px rgba(255, 215, 0, 0.5))",
         duration: 2,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1
+      });
+
+      // Button glow effects
+      const buttons = ctaRef.current?.querySelectorAll("button");
+      buttons?.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+          gsap.to(button, {
+            boxShadow: "0 0 20px rgba(255, 215, 0, 0.6)",
+            scale: 1.05,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+        
+        button.addEventListener('mouseleave', () => {
+          gsap.to(button, {
+            boxShadow: "none",
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
       });
 
     }, headerRef);
@@ -104,11 +145,7 @@ const Header = () => {
   return (
     <header 
       ref={headerRef}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled 
-          ? 'h-16 backdrop-luxury shadow-luxury' 
-          : 'h-20 bg-transparent'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 h-20"
     >
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         {/* Logo */}
@@ -135,10 +172,10 @@ const Header = () => {
 
         {/* CTA Buttons */}
         <div ref={ctaRef} className="hidden md:flex items-center space-x-4">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="hover-glow border-primary/30 hover:border-primary">
             Sign In
           </Button>
-          <Button variant="hero" size="sm">
+          <Button variant="hero" size="sm" className="hover-glow bg-gradient-golden hover:shadow-[0_0_20px_rgba(255,215,0,0.6)]">
             Get Started
           </Button>
         </div>

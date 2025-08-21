@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Lock, FileCheck, Eye } from "lucide-react";
 import heroBackground from "@/assets/hero-bg.jpg";
+import dashboardPreview from "@/assets/dashboard-preview.png";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,7 +13,8 @@ const HeroSection = () => {
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
+  const mockupRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
   const floatingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,42 +29,67 @@ const HeroSection = () => {
         ease: "power2.out"
       })
       
-      // Headline staggered reveal
+      // Enhanced headline reveal with light effects
       .from(headlineRef.current?.children || [], {
         y: 100,
         opacity: 0,
-        duration: 1.2,
-        stagger: 0.3,
-        ease: "power3.out"
+        rotationX: 90,
+        transformOrigin: "50% 50%",
+        duration: 1.5,
+        stagger: 0.4,
+        ease: "power3.out",
+        onComplete: () => {
+          // Add light animation to text
+          gsap.to(headlineRef.current?.children || [], {
+            textShadow: "0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4)",
+            duration: 2,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: -1,
+            stagger: 0.5
+          });
+        }
       }, "-=0.5")
       
-      // Subtitle slide up
+      // Subtitle with glow effect
       .from(subtitleRef.current, {
         y: 50,
         opacity: 0,
-        duration: 0.8,
+        scale: 0.9,
+        duration: 1,
         ease: "power2.out"
       }, "-=0.8")
       
-      // Buttons appear with magnetic effect
+      // Buttons with enhanced effects
       .from(buttonsRef.current?.children || [], {
-        scale: 0.8,
-        y: 30,
+        scale: 0.6,
+        y: 40,
         opacity: 0,
-        duration: 0.6,
-        stagger: 0.2,
+        rotationY: 180,
+        duration: 0.8,
+        stagger: 0.3,
         ease: "back.out(1.7)"
       }, "-=0.4")
       
-      // Stats counter animation
-      .from(statsRef.current?.children || [], {
-        scale: 0.5,
-        y: 20,
+      // Desktop mockup animation
+      .from(mockupRef.current, {
+        x: 100,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "elastic.out(1, 0.5)"
-      }, "-=0.3");
+        scale: 0.8,
+        rotationY: -20,
+        duration: 1.2,
+        ease: "power3.out"
+      }, "-=1")
+      
+      // Mockup floating animation
+      .to(mockupRef.current, {
+        y: -15,
+        rotation: 2,
+        duration: 4,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1
+      }, "-=0.5");
 
       // Floating elements animation
       gsap.set(floatingRef.current?.children || [], {
@@ -132,52 +159,73 @@ const HeroSection = () => {
         </div>
       </div>
 
+      {/* Radial Glow Effect */}
+      <div ref={glowRef} className="absolute top-1/2 left-1/4 w-96 h-96 bg-gradient-radial from-primary/30 via-primary/10 to-transparent rounded-full blur-3xl opacity-50 animate-pulse" />
+
       <div className="container mx-auto px-4 py-20 relative z-10">
-        <div className="max-w-4xl mx-auto text-center space-y-12">
-          {/* Main Content */}
+        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
+          {/* Left Column - Content */}
           <div className="space-y-8">
             <div className="space-y-6">
-              <h1 ref={headlineRef} className="text-6xl lg:text-8xl font-bold leading-tight">
+              <h1 ref={headlineRef} className="text-5xl lg:text-7xl font-bold leading-tight">
                 <span className="block bg-gradient-golden bg-clip-text text-transparent">
                   Secure Your
                 </span>
                 <span className="block text-foreground">Digital Future</span>
-                <span className="block bg-gradient-golden bg-clip-text text-transparent text-4xl lg:text-5xl mt-4">
+                <span className="block bg-gradient-golden bg-clip-text text-transparent text-3xl lg:text-4xl mt-4">
                   In Ethiopia
                 </span>
               </h1>
-              <p ref={subtitleRef} className="text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              <p ref={subtitleRef} className="text-xl text-muted-foreground leading-relaxed">
                 Ethiopia's premier PKI certificate services platform. Request and manage 
                 digital certificates from authorized Registration Authorities with 
                 unparalleled security and reliability.
               </p>
             </div>
 
-            <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button variant="hero" size="xl" className="group text-lg px-8 py-4">
-                Get Certificate Now
+            <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4">
+              <Button variant="hero" size="xl" className="group text-lg px-8 py-4 hover-glow">
+                Download Your Certificate
                 <ArrowRight className="ml-2 h-6 w-6 transition-transform group-hover:translate-x-2" />
               </Button>
-              <Button variant="outline" size="xl" className="group text-lg px-8 py-4">
-                <Eye className="mr-2 h-6 w-6" />
-                View Demo
+              <Button variant="outline" size="xl" className="group text-lg px-8 py-4 hover-glow border-primary/30">
+                Register Now
+                <Shield className="ml-2 h-6 w-6" />
               </Button>
             </div>
           </div>
 
-          {/* Stats */}
-          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-16">
-            <div className="text-center space-y-2">
-              <div className="text-5xl lg:text-6xl font-bold bg-gradient-golden bg-clip-text text-transparent">10K+</div>
-              <div className="text-lg text-muted-foreground">Certificates Issued</div>
-            </div>
-            <div className="text-center space-y-2">
-              <div className="text-5xl lg:text-6xl font-bold bg-gradient-golden bg-clip-text text-transparent">99.9%</div>
-              <div className="text-lg text-muted-foreground">Uptime Guarantee</div>
-            </div>
-            <div className="text-center space-y-2">
-              <div className="text-5xl lg:text-6xl font-bold bg-gradient-golden bg-clip-text text-transparent">24/7</div>
-              <div className="text-lg text-muted-foreground">Expert Support</div>
+          {/* Right Column - Desktop Mockup */}
+          <div ref={mockupRef} className="relative">
+            <div className="relative">
+              {/* Desktop Frame */}
+              <div className="relative bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg p-6 shadow-2xl">
+                {/* Monitor Stand */}
+                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-20 h-6 bg-gray-700 rounded-b-lg"></div>
+                <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-32 h-4 bg-gray-600 rounded-lg"></div>
+                
+                {/* Screen */}
+                <div className="bg-black rounded-lg p-2">
+                  <div 
+                    className="w-full h-[300px] bg-cover bg-center rounded"
+                    style={{ backgroundImage: `url(${dashboardPreview})` }}
+                  >
+                    {/* Screen Overlay */}
+                    <div className="w-full h-full bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 rounded flex items-center justify-center">
+                      <div className="text-center space-y-4">
+                        <Shield className="h-16 w-16 text-primary mx-auto" />
+                        <h3 className="text-2xl font-bold bg-gradient-golden bg-clip-text text-transparent">
+                          PKI Dashboard
+                        </h3>
+                        <p className="text-sm text-muted-foreground">Secure Certificate Management</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-golden opacity-20 rounded-lg blur-xl scale-110 -z-10"></div>
             </div>
           </div>
         </div>
