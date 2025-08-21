@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, Lock, FileCheck, Eye } from "lucide-react";
+import { ArrowRight, Shield, Lock, FileCheck, Eye, Youtube } from "lucide-react";
 import heroBackground from "@/assets/hero-bg.jpg";
-import dashboardPreview from "@/assets/dashboard-preview.png";
+import dashboardPreview from "@/assets/EthiopiaSvgMap.gif";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import AnimatedBorderTrail from "./animata/container/animated-border-trail";
+import AnimatedGradientText from "./animata/text/animated-gradient-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,78 +17,74 @@ const HeroSection = () => {
   const buttonsRef = useRef<HTMLDivElement>(null);
   const mockupRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const cursorGlowRef = useRef<HTMLDivElement>(null);
   const floatingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // Ensure buttons are visible initially
+      gsap.set(buttonsRef.current?.children || [], { opacity: 1, y: 0 });
+
       // Timeline for hero entrance
       const tl = gsap.timeline();
-      
+
       // Background fade in
       tl.from(heroRef.current, {
         opacity: 0,
-        duration: 1,
+        duration: 0.8,
         ease: "power2.out"
       })
       
-      // Enhanced headline reveal with light effects
+      // Simplified headline animation for storytelling
       .from(headlineRef.current?.children || [], {
-        y: 100,
+        y: 30,
         opacity: 0,
-        rotationX: 90,
-        transformOrigin: "50% 50%",
-        duration: 1.5,
-        stagger: 0.4,
-        ease: "power3.out",
+        duration: 0.6,
+        stagger: 0.2,
+        ease: "power2.out",
         onComplete: () => {
-          // Add light animation to text
           gsap.to(headlineRef.current?.children || [], {
-            textShadow: "0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4)",
-            duration: 2,
+            textShadow: "0 0 10px rgba(255, 215, 0, 0.5)",
+            duration: 1.5,
             ease: "sine.inOut",
             yoyo: true,
             repeat: -1,
-            stagger: 0.5
+            stagger: 0.3
           });
         }
       }, "-=0.5")
       
-      // Subtitle with glow effect
+      // Subtitle animation
       .from(subtitleRef.current, {
-        y: 50,
+        y: 20,
         opacity: 0,
-        scale: 0.9,
-        duration: 1,
+        duration: 0.6,
         ease: "power2.out"
-      }, "-=0.8")
+      }, "-=0.4")
       
-      // Buttons with enhanced effects
+      // Buttons animation
       .from(buttonsRef.current?.children || [], {
-        scale: 0.6,
-        y: 40,
+        y: 20,
         opacity: 0,
-        rotationY: 180,
-        duration: 0.8,
-        stagger: 0.3,
-        ease: "back.out(1.7)"
+        duration: 0.6,
+        stagger: 0.2,
+        ease: "power2.out"
       }, "-=0.4")
       
       // Desktop mockup animation
       .from(mockupRef.current, {
-        x: 100,
+        x: 50,
         opacity: 0,
-        scale: 0.8,
-        rotationY: -20,
-        duration: 1.2,
+        scale: 0.9,
+        duration: 0.8,
         ease: "power3.out"
-      }, "-=1")
+      }, "-=0.6")
       
       // Mockup floating animation
       .to(mockupRef.current, {
-        y: -15,
-        rotation: 2,
-        duration: 4,
-        ease: "sine.inOut",
+        y: -10,
+        duration: 3,
+        ease: "sine.out",
         yoyo: true,
         repeat: -1
       }, "-=0.5");
@@ -100,26 +98,25 @@ const HeroSection = () => {
       gsap.to(floatingRef.current?.children || [], {
         opacity: 0.6,
         scale: 1,
-        duration: 1,
-        stagger: 0.5,
+        duration: 0.8,
+        stagger: 0.3,
         ease: "power2.out",
-        delay: 2
+        delay: 1
       });
 
       // Continuous floating animation
       gsap.to(".floating-icon", {
-        y: -10,
-        rotation: 5,
-        duration: 3,
+        y: -8,
+        duration: 2.5,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
-        stagger: 0.5
+        stagger: 0.3
       });
 
       // Parallax background
       gsap.to(".hero-bg", {
-        yPercent: -50,
+        yPercent: -30,
         ease: "none",
         scrollTrigger: {
           trigger: heroRef.current,
@@ -129,23 +126,70 @@ const HeroSection = () => {
         }
       });
 
+      // Hover glow effect for mockup
+      mockupRef.current?.addEventListener('mouseenter', () => {
+        gsap.to(glowRef.current, {
+          opacity: 0.25,
+          scale: 1.02,
+          duration: 0.9,
+          ease: "power2.out"
+        });
+      });
+
+      mockupRef.current?.addEventListener('mouseleave', () => {
+        gsap.to(glowRef.current, {
+          opacity: 0.1,
+          scale: 1,
+          duration: 0.9,
+          ease: "power2.out"
+        });
+      });
+
+
+      // Hover glow effect for buttons
+      const buttons = buttonsRef.current?.querySelectorAll("button") || [];
+      buttons.forEach(button => {
+        button.addEventListener('mouseenter', () => {
+          gsap.to(button, {
+            boxShadow: "0 0 12px rgba(255, 215, 0, 0.4)",
+            scale: 1.03,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+        button.addEventListener('mouseleave', () => {
+          gsap.to(button, {
+            boxShadow: "none",
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out"
+          });
+        });
+      });
+
     }, heroRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-visible">
       {/* Background Image with Overlay */}
       <div 
-        className="hero-bg absolute inset-0 bg-cover bg-center bg-no-repeat scale-110"
+        className="hero-bg absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
         style={{ backgroundImage: `url(${heroBackground})` }}
       />
-      <div className="absolute inset-0 bg-background/80" />
+      <div className="absolute inset-0 bg-background/70" />
       
+      {/* Cursor-Following Glow */}
+      <div 
+        ref={cursorGlowRef} 
+        className="absolute w-32 h-32 bg-gradient-radial from-primary/25 to-transparent rounded-full blur-lg opacity-0 pointer-events-none"
+      />
+
       {/* Floating Elements */}
       <div ref={floatingRef} className="absolute inset-0 pointer-events-none">
-        <div className="floating-icon absolute top-20 left-10">
+        <div className="floating-icon absolute bottom-20 left-10">
           <Shield className="h-8 w-8 text-primary" />
         </div>
         <div className="floating-icon absolute bottom-32 right-16">
@@ -159,73 +203,91 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Radial Glow Effect */}
-      <div ref={glowRef} className="absolute top-1/2 left-1/4 w-96 h-96 bg-gradient-radial from-primary/30 via-primary/10 to-transparent rounded-full blur-3xl opacity-50 animate-pulse" />
+      {/* Static Glow Effect */}
+      <div ref={glowRef} className="absolute top-1/2 left-1/4 w-64 h-64 bg-gradient-radial from-primary/15 to-transparent rounded-full blur-lg opacity-10" />
 
-      <div className="container mx-auto px-4 py-20 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center min-h-[80vh]">
+      <div className="container mx-auto px-10 py-16 relative z-10 flex-grow">
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[70vh]">
           {/* Left Column - Content */}
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <h1 ref={headlineRef} className="text-5xl lg:text-7xl font-bold leading-tight">
-                <span className="block bg-gradient-golden bg-clip-text text-transparent">
-                  Secure Your
-                </span>
-                <span className="block text-foreground">Digital Future</span>
-                <span className="block bg-gradient-golden bg-clip-text text-transparent text-3xl lg:text-4xl mt-4">
-                  In Ethiopia
-                </span>
-              </h1>
-              <p ref={subtitleRef} className="text-xl text-muted-foreground leading-relaxed">
-                Ethiopia's premier PKI certificate services platform. Request and manage 
-                digital certificates from authorized Registration Authorities with 
-                unparalleled security and reliability.
-              </p>
-            </div>
+          <div className="space-y-6">
+          <div className="space-y-4">
+  <h1 ref={headlineRef} className="text-4xl lg:text-6xl font-bold leading-tight">
+    <span className="block">
+      <div className="bg-[linear-gradient(90deg,#FFD700,#000)] bg-clip-text text-transparent animate-gradient-ripple space-y-2">
+        <span className="block">Secure Your</span>
+        <span className="block">Digital Future</span>
+        <span className="block text-2xl lg:text-3xl mt-2">In Ethiopia</span>
+      </div>
+    </span>
+  </h1>
+
+  <p ref={subtitleRef} className="text-lg text-muted-foreground leading-relaxed">
+    Discover Ethiopia's leading PKI platform. Seamlessly request and manage digital certificates with top-tier security and ease.
+  </p>
+</div>
+
 
             <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="xl" className="group text-lg px-8 py-4 hover-glow">
+            <AnimatedBorderTrail>       
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="group text-base px-6 py-3 hover-glow relative overflow-hidden bg-gradient-golden"
+              >
+                <span className="absolute inset-0 border-2 border-transparent rounded-lg animate-border-trail"></span>
                 Download Your Certificate
-                <ArrowRight className="ml-2 h-6 w-6 transition-transform group-hover:translate-x-2" />
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
-              <Button variant="outline" size="xl" className="group text-lg px-8 py-4 hover-glow border-primary/30">
-                Register Now
-                <Shield className="ml-2 h-6 w-6" />
+              </AnimatedBorderTrail>
+              
+        
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="group text-base px-6 py-3 hover-glow border-primary/40"
+              >
+                Learn More
+                <Youtube className="ml-2 h-5 w-5" />
               </Button>
             </div>
+          
           </div>
 
           {/* Right Column - Desktop Mockup */}
           <div ref={mockupRef} className="relative">
-            <div className="relative">
-              {/* Desktop Frame */}
-              <div className="relative bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg p-6 shadow-2xl">
-                {/* Monitor Stand */}
-                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-20 h-6 bg-gray-700 rounded-b-lg"></div>
-                <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 w-32 h-4 bg-gray-600 rounded-lg"></div>
-                
-                {/* Screen */}
-                <div className="bg-black rounded-lg p-2">
-                  <div 
-                    className="w-full h-[300px] bg-cover bg-center rounded"
-                    style={{ backgroundImage: `url(${dashboardPreview})` }}
-                  >
-                    {/* Screen Overlay */}
-                    <div className="w-full h-full bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 rounded flex items-center justify-center">
-                      <div className="text-center space-y-4">
-                        <Shield className="h-16 w-16 text-primary mx-auto" />
-                        <h3 className="text-2xl font-bold bg-gradient-golden bg-clip-text text-transparent">
-                          PKI Dashboard
-                        </h3>
-                        <p className="text-sm text-muted-foreground">Secure Certificate Management</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className="relative">
+    {/* Desktop Frame */}
+    <div className="relative bg-gradient-to-b from-gray-700 to-gray-900 rounded-lg p-2 shadow-md">
+      {/* Monitor Stand */}
+      <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 w-16 h-5 bg-gray-700 rounded-b-md"></div>
+      <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-24 h-3 bg-gray-600 rounded-md"></div>
+      
+      {/* Screen */}
+      <div className="bg-black rounded-md p-2">
+        <div className="w-full h-[280px] rounded relative overflow-hidden">
+          {/* GIF Background */}
+          <img 
+            src={dashboardPreview} // <-- replace with your GIF file
+            alt="Dashboard Preview"
+            className="w-full h-full object-cover z-100"
+          />
+
+          {/* Screen Overlay */}
+          {/* <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 rounded flex items-center justify-center">
+            <div className="text-center space-y-3">
+              <Shield className="h-14 w-14 text-primary mx-auto" />
+              <h3 className="text-xl font-bold bg-gradient-golden bg-clip-text text-transparent">
+                PKI Dashboard
+              </h3>
+              <p className="text-xs text-muted-foreground">Secure Certificate Management</p>
+            </div>
+          </div> */}
+        </div>
+      </div>
+    </div>
               
-              {/* Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-golden opacity-20 rounded-lg blur-xl scale-110 -z-10"></div>
+              {/* Refined Glow Effect */}
+              {/* <div ref={glowRef} className="absolute inset-0 bg-gradient-golden opacity-10 rounded-lg blur-md scale-103 -z-10 transition-all duration-300" /> */}
             </div>
           </div>
         </div>
@@ -233,5 +295,7 @@ const HeroSection = () => {
     </section>
   );
 };
+
+
 
 export default HeroSection;

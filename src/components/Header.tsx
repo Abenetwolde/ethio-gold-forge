@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Shield, ChevronDown } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
+import logo from "@/assets/logo.jpg";
 gsap.registerPlugin(ScrollTrigger);
 
 const Header = () => {
@@ -141,7 +141,39 @@ const Header = () => {
     { label: "FAQ", href: "#faq" },
     { label: "Contact", href: "#contact" },
   ];
+  const logoContainerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Scroll-triggered animation
+      ScrollTrigger.create({
+        trigger: document.body,
+        start: "top top",
+        end: 99999, // infinite scroll
+        onUpdate: (self) => {
+          const progress = Math.min(window.scrollY / 100, 1); // scroll progress 0 → 1
+  
+          // Shrink logo
+          gsap.to(logoRef.current, {
+            height: 4 + "rem", // 20 → 8
+            width: 4 + "rem",
+            duration: 0.3,
+            ease: "power2.out",
+          });
+  
+          // Fade-in text
+          gsap.to(logoContainerRef.current?.querySelector(".logo-text"), {
+            opacity: progress,
+            x: -10 * progress, // optional slide from left
+            duration: 0.1,
+            ease: "power2.out",
+          });
+        },
+      });
+    }, headerRef);
+  
+    return () => ctx.revert();
+  }, []);
   return (
     <header 
       ref={headerRef}
@@ -149,12 +181,17 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         {/* Logo */}
-        <div ref={logoRef} className="flex items-center space-x-2">
-          <Shield className="logo-icon h-8 w-8 text-primary" />
-          <span className="text-xl font-bold bg-gradient-golden bg-clip-text text-transparent">
-            Ethiopian PKI
-          </span>
-        </div>
+        <div ref={logoContainerRef} className="flex items-center space-x-2">
+  <img
+    ref={logoRef}
+    src={logo}
+    alt="Ethiopian PKI Logo"
+    className="logo-icon h-20 w-20 mt-2"
+  />
+  <span className="logo-text text-xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-600 bg-clip-text text-transparent opacity-0 transition-all duration-300">
+  Ethiopian National Root CA
+  </span>
+</div>
 
         {/* Desktop Navigation */}
         <nav ref={navRef} className="hidden md:flex items-center space-x-8">
@@ -167,17 +204,22 @@ const Header = () => {
               {item.label}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
             </a>
+            
           ))}
         </nav>
 
         {/* CTA Buttons */}
-        <div ref={ctaRef} className="hidden md:flex items-center space-x-4">
-          <Button variant="outline" size="sm" className="hover-glow border-primary/30 hover:border-primary">
-            Sign In
+        <div className="hidden md:flex lg:flex items-center space-x-4">
+          <Button variant="outline" size="default" className="hover-glow border-primary/30 hover:border-primary">
+            Sign In / Sign Up
           </Button>
-          <Button variant="hero" size="sm" className="hover-glow bg-gradient-golden hover:shadow-[0_0_20px_rgba(255,215,0,0.6)]">
+          {/* <Button variant="hero" size="sm" className="hover-glow bg-gradient-golden hover:shadow-[0_0_20px_rgba(255,215,0,0.6)]">
             Get Started
           </Button>
+          <button className="group relative overflow-hidden rounded-sm bg-gradient-golden px-4 py-2 text-lg transition-all">
+      <span className="absolute bottom-0 left-0 h-40 w-full origin-bottom translate-y-full transform overflow-hidden rounded-full bg-white/30 transition-all duration-300 ease-out group-hover:translate-y-14"></span>
+      <span className="font-semibold text-black">Sign Up/ Sign in</span>
+    </button> */}
         </div>
 
         {/* Mobile Menu Button */}

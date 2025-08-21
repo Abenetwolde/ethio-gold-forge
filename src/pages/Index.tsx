@@ -7,6 +7,7 @@ import PartnersSection from "@/components/PartnersSection";
 import FAQSection from "@/components/FAQSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import Carddds from "@/components/animata/card";
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <Header />
       <main>
         <HeroSection />
+        <Carddds/>
         <AboutSection />
         <StepsSection />
         <CertificationTypesSection />

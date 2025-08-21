@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "tailwindcss-animate";
+
 /* Ethiopian PKI Services - Luxurious Golden/Black Design System
 All colors MUST be HSL for proper theming.
 */
@@ -191,8 +193,36 @@ All colors MUST be HSL for proper theming.
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
 }
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 
-@keyframes glow-pulse {
-  0% { box-shadow: 0 0 5px hsl(var(--primary) / 0.5); }
-  100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.8); }
+@keyframes trail {
+  0%   { --angle: 0deg; }
+  100% { --angle: 360deg; }
+}
+
+.animate-trail {
+  animation: trail var(--duration, 10s) linear infinite;
+}
+
+@keyframes bg-position {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@keyframes gradient-diagonal {
+  0% {
+    background-position: 0% 0%; /* start top-left */
+  }
+  100% {
+    background-position: 100% 100%; /* move to bottom-right slowly */
+  }
+
+}
+
+.animate-gradient-diagonal {
+  animation: gradient-diagonal 4s ease-in-out infinite;
+  background-size: 300% 300%; /* increase for more visible movement */
 }
