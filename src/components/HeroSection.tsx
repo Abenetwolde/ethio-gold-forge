@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Lock, FileCheck, Eye, Youtube } from "lucide-react";
 import heroBackground from "@/assets/hero-bg.jpg";
-import dashboardPreview from "@/assets/EthiopiaSvgMap.gif";
+import dashboardPreview from "@/assets/hero.gif";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -176,7 +176,7 @@ const HeroSection = () => {
     <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center overflow-visible">
       {/* Background Image with Overlay */}
       <div 
-        className="hero-bg absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+        className=" absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 h-screen"
         style={{ backgroundImage: `url(${heroBackground})` }}
       />
       <div className="absolute inset-0 bg-background/70" />

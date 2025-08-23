@@ -226,3 +226,32 @@ All colors MUST be HSL for proper theming.
   animation: gradient-diagonal 4s ease-in-out infinite;
   background-size: 300% 300%; /* increase for more visible movement */
 }
+/* Marquee X Animation */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+/* Marquee Y Animation */
+@keyframes marquee-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+/* Horizontal Marquee Utility */
+.animate-marquee-horizontal {
+  animation: marquee-x var(--duration, 10s) linear infinite;
+}
+
+/* Vertical Marquee Utility */
+.animate-marquee-vertical {
+  animation: marquee-y var(--duration, 10s) linear infinite;
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight } from "lucide-react";
+import image from "@/assets/image.png"
 // Assuming GSAP is loaded globally via a CDN script tag in the HTML file.
 // For example: <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 // Or for ScrollTrigger: <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
@@ -26,7 +27,7 @@ const About = () => {
         "Integration with Ethiopian Revenue Ministry",
         "Real-time certificate status verification"
       ],
-      image: "https://t4.ftcdn.net/jpg/15/52/25/15/240_F_1552251566_LaOXOtWtUyCEDm40uFFgauAf14Pw28aR.jpg"
+      image:image
     },
     {
       title: "Advanced Security Infrastructure",
@@ -36,7 +37,7 @@ const About = () => {
         "Regular security audits and compliance checks",
         "Secure key management and storage"
       ],
-      image: "https://t4.ftcdn.net/jpg/16/02/32/93/240_F_1602329389_DmfQZX8J6iwWDfYXEPYur7U964FICo7F.jpg"
+      image: image
     },
     {
       title: "Government Integration",
@@ -46,7 +47,7 @@ const About = () => {
         "Compliant with Ethiopian e-Government standards",
         "Support for official digital signatures"
       ],
-      image: "https://t4.ftcdn.net/jpg/12/42/68/25/240_F_1242682561_2PuX6ylLvZjmvo0iUJXdGWWlfBNIx4Wv.jpg"
+      image:image
     }
   ];
 
@@ -143,14 +144,14 @@ const About = () => {
                 ))}
               </div>
               {/* Image */}
-              <div className="relative w-full pl-10" ref={imageRef}>
+              <div className="relative w-full h-100 pl-10" ref={imageRef}>
                 {/* <div 
                   className="w-full max-w-md h-96 bg-cover bg-center round-sm"
                   style={{ 
                     backgroundImage: `url(${contentItems[activeContent].image})`
                   }}
                 /> */}
-                <img src={contentItems[activeContent].image}id='clipped' data-clip="5% 5%, 100% 0%, 100% 75%"  className="h-100 w-full"/>
+                <img src={contentItems[activeContent].image}id='clipped' data-clip="5% 5%, 100% 0%, 100% 75%"  className="h-50 w-full"/>
               </div>
             </div>
 
